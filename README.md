@@ -50,7 +50,7 @@ This system provides:
 - **Backend**: Django 4.2, Django REST Framework
 - **Database**: SQLite (Development) / PostgreSQL (Production)
 - **Authentication**: JWT (django-rest-framework-simplejwt)
-- **Documentation**: OpenAPI (drf-yasg) - Coming soon
+- **Documentation**: Coming soon
 - **Testing**: Django Test Framework
 - **Version Control**: Git
 
