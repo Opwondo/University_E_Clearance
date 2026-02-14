@@ -56,7 +56,7 @@ This system provides:
 
 ## 📁 Project Structure
 
-
+```bash
 University_E_Clearance/
 ├── accounts
 │   ├── admin.py
@@ -124,6 +124,8 @@ University_E_Clearance/
     ├── lib
     ├── lib64 -> lib
     └── pyvenv.cfg
+...
+```
 
 
 
