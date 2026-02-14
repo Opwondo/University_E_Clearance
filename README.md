@@ -50,47 +50,84 @@ This system provides:
 - **Backend**: Django 4.2, Django REST Framework
 - **Database**: SQLite (Development) / PostgreSQL (Production)
 - **Authentication**: JWT (django-rest-framework-simplejwt)
-- **Documentation**: OpenAPI (drf-yasg) - Coming soon
+- **Documentation**: Coming soon
 - **Testing**: Django Test Framework
 - **Version Control**: Git
 
 ## 📁 Project Structure
 
-
+```bash
 University_E_Clearance/
-├── e_clearance/ # Project configuration
-│ ├── settings.py # Django settings
-│ ├── urls.py # Main URL configuration
-│ └── wsgi.py
-├── accounts/ # User management app
-│ ├── models.py # Custom User model
-│ ├── serializers.py # User serializers
-│ ├── views.py # Authentication views
-│ ├── permissions.py # Role-based permissions
-│ └── urls.py # Auth endpoints
-├── students/ # Student management app
-│ ├── models.py # StudentProfile model
-│ ├── serializers.py # Student serializers
-│ ├── views.py # Student CRUD views
-│ └── urls.py # Student endpoints
-├── departments/ # Department management app
-│ ├── models.py # Department model
-│ ├── serializers.py # Department serializers
-│ ├── views.py # Department CRUD views
-│ └── urls.py # Department endpoints
-├── clearance/ # Clearance workflow app
-│ ├── models.py # ClearanceRecord model
-│ ├── serializers.py # Clearance serializers
-│ ├── views.py # Clearance workflow views
-│ └── urls.py # Clearance endpoints
-├── audit/ # Audit logging app
-│ ├── models.py # AuditLog model
-│ ├── middleware.py # Request logging middleware
-│ └── urls.py # Audit endpoints
+├── accounts
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── permissions.py
+│   ├── __pycache__
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── audit
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── __pycache__
+│   ├── tests.py
+│   └── views.py
+├── clearance
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── __pycache__
+│   ├── tests.py
+│   └── views.py
+├── db.sqlite3
+├── departments
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── __pycache__
+│   ├── tests.py
+│   └── views.py
+├── e_clearance
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
 ├── manage.py
+├── README.md
 ├── requirements.txt
-├── .gitignore
-└── README.md
+├── students
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   ├── models.py
+│   ├── __pycache__
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+└── venv
+    ├── bin
+    ├── include
+    ├── lib
+    ├── lib64 -> lib
+    └── pyvenv.cfg
+...
+```
+
+
 
 
 ## 🚀 Installation
