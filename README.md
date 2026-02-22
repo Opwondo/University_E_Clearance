@@ -8,11 +8,6 @@ A comprehensive Django REST API for automating university student clearance proc
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
-- [API Documentation](#api-documentation)
-- [Database Schema](#database-schema)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## 🎯 Overview
 
