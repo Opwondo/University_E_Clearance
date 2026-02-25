@@ -1,11 +1,11 @@
-from rest_framework import generics, permissions, filters, status
+from rest_framework import generics, permissions, filters, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-
+from clearance.utils import EmailNotificationService
 from .models import ClearanceSession, ClearanceRecord, ClearanceWorkflow, ClearanceComment
 from .serializers import (
     ClearanceSessionSerializer, ClearanceRecordSerializer,
@@ -82,6 +82,10 @@ class ClearanceSessionListCreateView(generics.ListCreateAPIView):
             
             # Create clearance records for all departments in workflow
             self._create_clearance_records(session)
+            
+            # =====  EMAIL NOTIFICATION AFTER SESSION CREATION =====
+            EmailNotificationService.send_session_created_notification(session, self.request)
+            # ==========================================================
     
     def _create_clearance_records(self, session):
         """Create clearance records for all departments in the workflow"""
@@ -149,6 +153,9 @@ class ApproveClearanceView(APIView):
             record.remarks = serializer.validated_data.get('remarks', '')
             record.save()
             
+            # Send approval notification
+            EmailNotificationService.send_record_approved_notification(record, self.request)
+
             # Update session status
             session = record.session
             self._update_session_progress(session)
@@ -176,6 +183,8 @@ class ApproveClearanceView(APIView):
         if approved_records == total_records:
             session.status = 'COMPLETED'
             session.completed_at = timezone.now()
+            # Send completion notification
+            EmailNotificationService.send_session_completed_notification(session, self.request)
         elif session.status == 'DRAFT':
             session.status = 'IN_PROGRESS'
         
@@ -236,6 +245,9 @@ class RejectClearanceView(APIView):
             record.approved_at = timezone.now()
             record.remarks = serializer.validated_data['remarks']
             record.save()
+            
+            # Send rejection notification
+            EmailNotificationService.send_record_rejected_notification(record, self.request)
             
             # Update session status
             session = record.session

@@ -1,0 +1,24 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>🎉 Clearance Successfully Completed! 🎉</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<div style="background: #d4edda; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0;">
+    <h2 style="color: #155724;">CONGRATULATIONS!</h2>
+    <p style="font-size: 18px;">You have successfully completed all clearance requirements.</p>
+</div>
+
+<h3>Clearance Summary:</h3>
+<ul>
+    <li><strong>Session ID:</strong> {{ session_id }}</li>
+    <li><strong>Completed:</strong> {{ completed_at|date:"F j, Y" }}</li>
+    <li><strong>Total Departments Cleared:</strong> {{ total_departments }}</li>
+</ul>
+
+<p>Your clearance certificate is now available for download:</p>
+<a href="{{ certificate_url }}" class="button">Download Certificate</a>
+
+<p>Congratulations on your achievement! 🎓</p>
+{% endblock %}

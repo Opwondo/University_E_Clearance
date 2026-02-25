@@ -1,0 +1,24 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Department Clearance Approved ✅</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>Good news! Your clearance has been <strong>approved</strong> by the {{ department_name }}.</p>
+
+<div style="background: #d4edda; padding: 15px; border-radius: 5px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Approval Details:</h3>
+    <p><strong>Department:</strong> {{ department_name }}</p>
+    <p><strong>Approved by:</strong> {{ officer_name }}</p>
+    <p><strong>Date:</strong> {{ approved_at|date:"F j, Y, g:i a" }}</p>
+    {% if remarks %}
+        <p><strong>Remarks:</strong> {{ remarks }}</p>
+    {% endif %}
+</div>
+
+<h3>Current Progress:</h3>
+<p>You have completed <strong>{{ completed_departments }}</strong> out of <strong>{{ total_departments }}</strong> departments.</p>
+
+<a href="{{ portal_url }}" class="button">Check Your Progress</a>
+{% endblock %}

@@ -1,5 +1,10 @@
 from django.urls import path
 from . import views
+from .views_email import (
+    EmailNotificationListView, 
+    EmailNotificationDetailView, 
+    EmailNotificationStatsView
+)
 
 urlpatterns = [
     # Workflow endpoints
@@ -22,4 +27,9 @@ urlpatterns = [
     
     # Comment endpoints
     path('records/<int:record_id>/comments/', views.ClearanceCommentsView.as_view(), name='record-comments'),
+    
+    # Email notification endpoints
+    path('notifications/', EmailNotificationListView.as_view(), name='notification-list'),
+    path('notifications/<int:pk>/', EmailNotificationDetailView.as_view(), name='notification-detail'),
+    path('notifications/stats/', EmailNotificationStatsView.as_view(), name='notification-stats'),
 ]

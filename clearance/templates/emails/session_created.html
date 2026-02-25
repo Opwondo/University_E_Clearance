@@ -1,0 +1,22 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Clearance Session Created</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>Your clearance session has been successfully created. You can now proceed with the clearance process.</p>
+
+<h3>Session Details:</h3>
+<ul>
+    <li><strong>Session ID:</strong> {{ session_id }}</li>
+    <li><strong>Workflow:</strong> {{ workflow_name }}</li>
+    <li><strong>Started:</strong> {{ started_at|date:"F j, Y" }}</li>
+    <li><strong>Departments to clear:</strong> {{ total_departments }}</li>
+</ul>
+
+<p>You can track your progress by visiting the student portal:</p>
+<a href="{{ portal_url }}" class="button">View My Clearance</a>
+
+<p>Good luck with your clearance!</p>
+{% endblock %}

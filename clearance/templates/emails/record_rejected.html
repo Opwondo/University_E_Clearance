@@ -1,0 +1,21 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Department Clearance Update</h2>
+
+<p>Dear {{ student_name }},</p>
+
+<p>Your clearance has been <strong style="color: #dc3545;">rejected</strong> by the {{ department_name }}.</p>
+
+<div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0;">
+    <h3 style="margin-top: 0;">Rejection Details:</h3>
+    <p><strong>Department:</strong> {{ department_name }}</p>
+    <p><strong>Reviewed by:</strong> {{ officer_name }}</p>
+    <p><strong>Date:</strong> {{ rejected_at|date:"F j, Y, g:i a" }}</p>
+    <p><strong>Reason:</strong> {{ remarks }}</p>
+</div>
+
+<p>Please address the issues mentioned above and contact the department for clarification if needed.</p>
+
+<a href="{{ portal_url }}" class="button">View Details</a>
+{% endblock %}

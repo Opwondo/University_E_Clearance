@@ -1,0 +1,29 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Pending Clearance Reminder</h2>
+
+<p>Dear {{ officer_name }},</p>
+
+<p>You have <strong style="color: #856404;">{{ pending_count }}</strong> pending clearance requests awaiting your review.</p>
+
+<h3>Pending Departments:</h3>
+<ul>
+{% for dept in pending_departments %}
+    <li>
+        <strong>{{ dept.name }}</strong> - {{ dept.pending_count }} requests pending
+        <ul>
+        {% for student in dept.students %}
+            <li>{{ student.name }} ({{ student.admission }}) - Submitted: {{ student.submitted_at|timesince }} ago</li>
+        {% endfor %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+
+<p>Please log in to the clearance system to review these requests.</p>
+
+<a href="{{ portal_url }}" class="button">Go to Dashboard</a>
+
+<p>Thank you for your timely response!</p>
+{% endblock %}
