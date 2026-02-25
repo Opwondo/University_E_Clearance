@@ -278,4 +278,83 @@ University_E_Clearance/
 ├── 📄 .gitignore
 └── 📄 README.md
 ```
+---
 
+## 🚀 Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
+- virtualenv (recommended)
+- Git
+- Redis (for Celery tasks)
+- PostgreSQL (optional, for production)
+
+### Step-by-Step Setup
+
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/Opwondo/University_E_Clearance.git
+cd University_E_Clearance
+```
+2. Create and Activate Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate on Linux/Mac
+source venv/bin/activate
+
+# Activate on Windows
+# venv\Scripts\activate
+```
+3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+4. Configure Environment Variables
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+nano .env
+```
+5. Apply Database Migrations
+```bash
+python manage.py makemigrations accounts
+python manage.py makemigrations students
+python manage.py makemigrations departments
+python manage.py makemigrations clearance
+python manage.py makemigrations audit
+python manage.py makemigrations reports
+python manage.py makemigrations certificates
+python manage.py migrate
+```
+6. Create Superuser (Admin)
+```bash
+python manage.py createsuperuser
+```
+Follow the prompts:
+
+Username: admin
+
+Email: admin@example.com
+
+Password: ChooseAStrongPassword123!
+
+7. Start Redis (for Celery)
+```bash
+# In a separate terminal
+redis-server
+```
+8. Start Celery Worker
+```bash
+# In a separate terminal
+cd University_E_Clearance
+source venv/bin/activate
+celery -A e_clearance worker --loglevel=info
+```
+9. Run Development Server
+```bash
+python manage.py runserver
+```
