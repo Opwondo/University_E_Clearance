@@ -200,5 +200,82 @@ This system provides:
 | Flake8 | Linting |
 
 ---
-
+```
 ## 📁 Project Structure
+
+University_E_Clearance/
+├── 📁 accounts/ # User management app
+│ ├── 📄 models.py # Custom User model with roles
+│ ├── 📄 permissions.py # Role-based permissions
+│ ├── 📄 serializers.py # User serializers
+│ ├── 📄 views.py # Authentication views
+│ └── 📄 urls.py # Auth endpoints
+│
+├── 📁 students/ # Student management app
+│ ├── 📄 models.py # StudentProfile model
+│ ├── 📄 serializers.py # Student serializers
+│ ├── 📄 views.py # Student CRUD views
+│ └── 📄 urls.py # Student endpoints
+│
+├── 📁 departments/ # Department management app
+│ ├── 📄 models.py # Department model
+│ ├── 📄 serializers.py # Department serializers
+│ ├── 📄 views.py # Department CRUD views
+│ └── 📄 urls.py # Department endpoints
+│
+├── 📁 clearance/ # Core clearance workflow app
+│ ├── 📄 models.py # WorkflowStage, ClearanceSession, etc.
+│ ├── 📄 serializers.py # Clearance serializers
+│ ├── 📄 views.py # Clearance workflow views
+│ ├── 📄 views_email.py # Email notification views
+│ ├── 📄 utils/ # Utility functions
+│ │ ├── 📄 init.py
+│ │ └── 📄 email_utils.py # Email sending logic
+│ ├── 📄 templates/emails/ # Email templates
+│ │ ├── 📄 session_created.html
+│ │ ├── 📄 record_approved.html
+│ │ ├── 📄 record_rejected.html
+│ │ ├── 📄 session_completed.html
+│ │ └── 📄 pending_reminder.html
+│ └── 📄 urls.py # Clearance endpoints
+│
+├── 📁 audit/ # Audit logging app
+│ ├── 📄 models.py # AuditLog model
+│ ├── 📄 middleware.py # Request logging middleware
+│ ├── 📄 serializers.py # Audit serializers
+│ ├── 📄 views.py # Audit API endpoints
+│ └── 📄 urls.py # Audit routes
+│
+├── 📁 reports/ # Reporting & analytics app
+│ ├── 📄 models.py # Statistics models
+│ ├── 📄 serializers.py # Report serializers
+│ ├── 📄 views.py # Analytics endpoints
+│ ├── 📄 templates/reports/ # Dashboard templates
+│ │ └── 📄 dashboard.html # Interactive dashboard
+│ └── 📄 urls.py # Report endpoints
+│
+├── 📁 certificates/ # PDF certificate app
+│ ├── 📄 models.py # Certificate models
+│ ├── 📄 serializers.py # Certificate serializers
+│ ├── 📄 views.py # Certificate generation views
+│ ├── 📄 templates/certificates/ # Certificate templates
+│ │ ├── 📄 base_certificate.html
+│ │ └── 📄 graduation_certificate.html
+│ └── 📄 urls.py # Certificate endpoints
+│
+├── 📁 e_clearance/ # Project configuration
+│ ├── 📄 settings.py # Django settings
+│ ├── 📄 urls.py # Main URL configuration
+│ ├── 📄 celery.py # Celery configuration
+│ └── 📄 wsgi.py
+│
+├── 📁 media/ # User uploaded files
+│ └── 📁 certificates/ # Generated PDF certificates
+│
+├── 📄 manage.py
+├── 📄 requirements.txt
+├── 📄 .env.example
+├── 📄 .gitignore
+└── 📄 README.md
+```
+
