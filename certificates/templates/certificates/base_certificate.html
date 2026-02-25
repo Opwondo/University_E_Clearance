@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearance Certificate</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 2cm;
+            
+            @frame footer {
+                -pdf-frame-content: footer_content;
+                bottom: 1cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+        }
+        
+        .certificate-wrapper {
+            border: 20px solid #2c3e50;
+            padding: 40px;
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .university-logo {
+            margin-bottom: 20px;
+        }
+        
+        .university-logo h1 {
+            font-size: 48px;
+            color: #2c3e50;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        
+        .university-name {
+            font-size: 24px;
+            color: #34495e;
+            margin-top: 5px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .certificate-title {
+            font-size: 40px;
+            color: #27ae60;
+            margin: 40px 0 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        
+        .presented-to {
+            font-size: 20px;
+            color: #7f8c8d;
+            margin: 30px 0 10px;
+        }
+        
+        .student-name {
+            font-size: 48px;
+            color: #2c3e50;
+            margin: 10px 0;
+            font-weight: bold;
+            border-bottom: 2px dashed #3498db;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .student-details {
+            font-size: 18px;
+            color: #34495e;
+            margin: 30px 0;
+            line-height: 2;
+        }
+        
+        .clearance-statement {
+            font-size: 20px;
+            color: #27ae60;
+            margin: 40px 0;
+            font-style: italic;
+        }
+        
+        .signature-section {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 50px;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        
+        .signature-line {
+            border-top: 1px solid #2c3e50;
+            margin: 10px 0;
+            padding-top: 10px;
+        }
+        
+        .verification-code {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 30px;
+        }
+        
+        .footer {
+            font-size: 10px;
+            color: #bdc3c7;
+            text-align: center;
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(189, 195, 199, 0.1);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+    </style>
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+    <div class="certificate-wrapper">
+        <div class="watermark">UNIVERSITY</div>
+        
+        <div class="university-logo">
+            <h1>🎓</h1>
+            <h1>CLEARANCE SYSTEM</h1>
+        </div>
+        
+        <div class="university-name">
+            UNIVERSITY OF TECHNOLOGY
+        </div>
+        
+        <div class="certificate-title">
+            CERTIFICATE OF CLEARANCE
+        </div>
+        
+        <div class="presented-to">
+            This is to certify that
+        </div>
+        
+        <div class="student-name">
+            {{ student_name }}
+        </div>
+        
+        <div class="student-details">
+            <p>Admission Number: <strong>{{ admission_number }}</strong></p>
+            <p>Registration Number: <strong>{{ registration_number }}</strong></p>
+            <p>Faculty of <strong>{{ faculty }}</strong></p>
+            <p>Department of <strong>{{ department }}</strong></p>
+            <p>Course: <strong>{{ course }}</strong></p>
+        </div>
+        
+        <div class="clearance-statement">
+            has successfully completed all clearance requirements<br>
+            and is hereby cleared for {{ clearance_type }}.
+        </div>
+        
+        <div class="signature-section">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div>Registrar</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div>Dean of Students</div>
+            </div>
+        </div>
+        
+        <div class="verification-code">
+            Certificate No: {{ certificate_number }} | Verification Code: {{ verification_code }}
+        </div>
+        
+        <div class="footer">
+            Issued on {{ issue_date|date:"F d, Y" }} | This certificate can be verified online
+        </div>
+    </div>
+</body>
+</html>

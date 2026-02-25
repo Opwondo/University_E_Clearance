@@ -12,5 +12,6 @@ urlpatterns = [
     path('api/audit/', include('audit.urls')),
     path('api/reports/', include('reports.urls')),
     path('dashboard/', views_dashboard.DashboardTemplateView.as_view(), name='dashboard-html'),
+    path('api/certificates/', include('certificates.urls')),
 
 ]

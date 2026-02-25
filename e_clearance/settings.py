@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'clearance',
     'audit',
     'reports',
+    'certificates',
     
 ]
 
@@ -113,6 +114,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# WeasyPrint settings
+WEASYPRINT = {
+    'BASE_URL': 'http://localhost:8000',
+}
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
