@@ -200,8 +200,8 @@ This system provides:
 | Flake8 | Linting |
 
 ---
-```
 ## 📁 Project Structure
+```
 
 University_E_Clearance/
 ├── 📁 accounts/ # User management app
