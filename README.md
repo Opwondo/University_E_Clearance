@@ -9,7 +9,6 @@
 ![Celery](https://img.shields.io/badge/Celery-5.3-brightgreen)
 ![Redis](https://img.shields.io/badge/Redis-7.0-red)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)
 ![Build](https://img.shields.io/badge/build-passing-success)
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
@@ -37,7 +36,6 @@ A comprehensive **Django REST API** for automating university student clearance 
 - [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
-- [License](#-license)
 - [Acknowledgments](#-acknowledgments)
 
 ---
