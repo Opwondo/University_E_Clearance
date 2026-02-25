@@ -295,7 +295,7 @@ University_E_Clearance/
 git clone https://github.com/Opwondo/University_E_Clearance.git
 cd University_E_Clearance
 ```
-2. Create and Activate Virtual Environment
+#### 2. Create and Activate Virtual Environment
 
 ```bash
 # Create virtual environment
@@ -307,17 +307,17 @@ source venv/bin/activate
 # Activate on Windows
  venv\Scripts\activate
 ```
-3. Install Dependencies
+#### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
-4. Configure Environment Variables
+#### 4. Configure Environment Variables
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 nano .env
 ```
-5. Apply Database Migrations
+#### 5. Apply Database Migrations
 ```bash
 python manage.py makemigrations accounts
 python manage.py makemigrations students
@@ -328,7 +328,7 @@ python manage.py makemigrations reports
 python manage.py makemigrations certificates
 python manage.py migrate
 ```
-6. Create Superuser (Admin)
+#### 6. Create Superuser (Admin)
 ```bash
 python manage.py createsuperuser
 ```
@@ -340,24 +340,24 @@ Email: admin@example.com
 
 Password: ChooseAStrongPassword123!
 
-7. Start Redis (for Celery)
+#### 7. Start Redis (for Celery)
 ```bash
 # In a separate terminal
 redis-server
 ```
-8. Start Celery Worker
+#### 8. Start Celery Worker
 ```bash
 # In a separate terminal
 cd University_E_Clearance
 source venv/bin/activate
 celery -A e_clearance worker --loglevel=info
 ```
-9. Run Development Server
+#### 9. Run Development Server
 ```bash
 python manage.py runserver
 ```
 
-10. Verify Installation
+#### 10. Verify Installation
 ```
 API Root: http://127.0.0.1:8000/api/
 
@@ -366,7 +366,7 @@ Admin Interface: http://127.0.0.1:8000/admin/
 Interactive Dashboard: http://127.0.0.1:8000/api/reports/dashboard/
 ```
 
-⚙️ Configuration
+## ⚙️ Configuration
 ```
 Environment Variables (.env)
 env
@@ -380,23 +380,23 @@ DB_ENGINE=django.db.backends.sqlite3
 DB_NAME=db.sqlite3
 
 # PostgreSQL Configuration (for production)
-# DB_ENGINE=django.db.backends.postgresql
-# DB_NAME=e_clearance
-# DB_USER=postgres
-# DB_PASSWORD=yourpassword
-# DB_HOST=localhost
-# DB_PORT=5432
+ DB_ENGINE=django.db.backends.postgresql
+ DB_NAME=e_clearance
+ DB_USER=postgres
+ DB_PASSWORD=yourpassword
+ DB_HOST=localhost
+ DB_PORT=5432
 
 # Email Configuration (for notifications)
 EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend  # Development
 # For production with Gmail:
-# EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-# EMAIL_HOST=smtp.gmail.com
-# EMAIL_PORT=587
-# EMAIL_USE_TLS=True
-# EMAIL_HOST_USER=your-email@gmail.com
-# EMAIL_HOST_PASSWORD=your-app-password
-# DEFAULT_FROM_EMAIL=noreply@university.edu
+ EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+ EMAIL_HOST=smtp.gmail.com
+ EMAIL_PORT=587
+ EMAIL_USE_TLS=True
+ EMAIL_HOST_USER=your-email@gmail.com
+ EMAIL_HOST_PASSWORD=your-app-password
+ DEFAULT_FROM_EMAIL=noreply@university.edu
 
 # Redis Configuration (for Celery)
 REDIS_URL=redis://localhost:6379
