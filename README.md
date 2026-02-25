@@ -356,3 +356,130 @@ celery -A e_clearance worker --loglevel=info
 ```bash
 python manage.py runserver
 ```
+
+10. Verify Installation
+```
+API Root: http://127.0.0.1:8000/api/
+
+Admin Interface: http://127.0.0.1:8000/admin/
+
+Interactive Dashboard: http://127.0.0.1:8000/api/reports/dashboard/
+```
+
+⚙️ Configuration
+```
+Environment Variables (.env)
+env
+# Django Settings
+SECRET_KEY=your-secret-key-here-change-in-production
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database Configuration (SQLite for development)
+DB_ENGINE=django.db.backends.sqlite3
+DB_NAME=db.sqlite3
+
+# PostgreSQL Configuration (for production)
+# DB_ENGINE=django.db.backends.postgresql
+# DB_NAME=e_clearance
+# DB_USER=postgres
+# DB_PASSWORD=yourpassword
+# DB_HOST=localhost
+# DB_PORT=5432
+
+# Email Configuration (for notifications)
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend  # Development
+# For production with Gmail:
+# EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# EMAIL_HOST=smtp.gmail.com
+# EMAIL_PORT=587
+# EMAIL_USE_TLS=True
+# EMAIL_HOST_USER=your-email@gmail.com
+# EMAIL_HOST_PASSWORD=your-app-password
+# DEFAULT_FROM_EMAIL=noreply@university.edu
+
+# Redis Configuration (for Celery)
+REDIS_URL=redis://localhost:6379
+```
+
+## 📚 API Documentation
+
+### Authentication Endpoints
+| Method | Endpoint | Description | Request Body | Response | Permissions |
+|--------|----------|-------------|--------------|----------|-------------|
+| POST | `/api/auth/login/` | Obtain JWT token | `{"username": "string", "password": "string"}` | `{"access": "token", "refresh": "token"}` | Public |
+| POST | `/api/auth/refresh/` | Refresh token | `{"refresh": "token"}` | `{"access": "new_token"}` | Public |
+
+### Student Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/students/` | List students (with filters) | Admin/Officer |
+| POST | `/api/students/` | Create student | Admin |
+| GET | `/api/students/{id}/` | Get student details | Admin/Officer/Owner |
+| PUT | `/api/students/{id}/` | Update student | Admin |
+| DELETE | `/api/students/{id}/` | Delete student | Admin |
+| GET | `/api/students/me/profile/` | Current student profile | Student |
+
+### Department Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/departments/` | List departments | Authenticated |
+| POST | `/api/departments/` | Create department | Admin |
+| GET | `/api/departments/{id}/` | Department details | Authenticated |
+| PUT | `/api/departments/{id}/` | Update department | Admin/Officer |
+| DELETE | `/api/departments/{id}/` | Delete department | Admin |
+| GET | `/api/departments/{id}/officers/` | List officers | Admin/Officer |
+| POST | `/api/departments/{id}/officers/` | Add officers | Admin |
+| DELETE | `/api/departments/{id}/officers/` | Remove officers | Admin |
+| GET | `/api/departments/hierarchy/tree/` | Department hierarchy | Authenticated |
+
+### Clearance Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/clearance/workflows/` | List available workflows | Authenticated |
+| POST | `/api/clearance/sessions/` | Start clearance session | Student |
+| GET | `/api/clearance/sessions/{id}/` | View session progress | Owner/Officer/Admin |
+| GET | `/api/clearance/student/summary/` | Student dashboard | Student |
+| GET | `/api/clearance/pending/` | Officer's pending tasks | Officer |
+| GET | `/api/clearance/records/{id}/` | Record details | Authenticated |
+| POST | `/api/clearance/records/{id}/approve/` | Approve request | Officer |
+| POST | `/api/clearance/records/{id}/reject/` | Reject request | Officer |
+| GET | `/api/clearance/records/{id}/comments/` | View comments | Authenticated |
+
+### Email Notification Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/clearance/notifications/` | List email notifications | Authenticated |
+| GET | `/api/clearance/notifications/{id}/` | Notification details | Owner/Admin |
+| GET | `/api/clearance/notifications/stats/` | Email statistics | Admin/Officer |
+
+### Audit Log Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/audit/logs/` | List audit logs | Admin |
+| GET | `/api/audit/logs/{id}/` | Log details | Admin |
+| GET | `/api/audit/logs/recent/` | Recent activities | Admin |
+| GET | `/api/audit/logs/user/{id}/` | User-specific logs | Admin |
+| GET | `/api/audit/logs/entity/{type}/{id}/` | Entity-specific logs | Admin |
+| GET | `/api/audit/logs/stats/summary/` | Audit statistics | Admin |
+
+### Report Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| GET | `/api/reports/dashboard/overview/` | Dashboard overview | Admin |
+| GET | `/api/reports/trends/clearance/` | Clearance trends | Admin |
+| GET | `/api/reports/trends/heatmap/` | Activity heatmap | Admin |
+| GET | `/api/reports/departments/performance/` | Department metrics | Admin |
+| GET | `/api/reports/students/progress/` | Student progress | Admin |
+| GET | `/api/reports/export/` | Export data | Admin |
+| GET | `/api/reports/dashboard/` | Interactive HTML dashboard | Admin |
+
+### Certificate Endpoints
+| Method | Endpoint | Description | Permissions |
+|--------|----------|-------------|-------------|
+| POST | `/api/certificates/generate/{session_id}/` | Generate certificate | Owner/Admin |
+| GET | `/api/certificates/download/{id}/` | Download PDF | Owner/Admin |
+| GET | `/api/certificates/{id}/` | Certificate details | Owner/Admin |
+| GET | `/api/certificates/my-certificates/` | Student's certificates | Student |
+| POST | `/api/certificates/verify/` | Public verification | Public |
+| GET | `/api/certificates/template/preview/` | Template preview | Admin |
