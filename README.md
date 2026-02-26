@@ -31,13 +31,6 @@ A comprehensive **Django REST API** for automating university student clearance 
 - [Installation](#-installation)
 - [Configuration](#-configuration)
 - [API Documentation](#-api-documentation)
-- [User Roles & Permissions](#-user-roles--permissions)
-- [Database Schema](#-database-schema)
-- [Testing](#-testing)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
-- [Acknowledgments](#-acknowledgments)
-
 ---
 
 ## 🎯 Overview
