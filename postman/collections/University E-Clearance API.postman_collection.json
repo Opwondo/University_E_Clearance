@@ -1,0 +1,1566 @@
+{
+  "info": {
+    "_postman_id": "391ea212-c8f1-43e4-b0a5-33ae98bd8c41",
+    "name": "University E-Clearance API",
+    "description": "Complete API collection for the University E-Clearance System. This API manages student clearance workflows, department approvals, certificates, audit logs, and reports.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Get Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "be5f1890-3610-453d-b95a-e68d964c0009",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Login successful - Status 200\", function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains access token\", function() {",
+                  "    pm.expect(jsonData).to.have.property('access');",
+                  "});",
+                  "",
+                  "pm.test(\"Access token is not empty\", function() {",
+                  "    pm.expect(jsonData.access).to.not.be.empty;",
+                  "});",
+                  "",
+                  "if (jsonData.access) {",
+                  "    pm.environment.set(\"token\", jsonData.access);",
+                  "    console.log(\"✅ Token saved successfully\");",
+                  "}",
+                  "",
+                  "if (jsonData.refresh) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "89614a84-1a23-49ee-9576-5763c336efe6",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "93362913-3a1f-47ca-b8b2-cd2249bdd6cd",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"Admin\",\n    \"password\": \"xv6m222vejtbx\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Authenticate user and obtain JWT access and refresh tokens"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Token refresh successful\", function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (jsonData.access) {",
+                  "    pm.environment.set(\"token\", jsonData.access);",
+                  "    console.log(\"✅ Token refreshed successfully\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "id": "7d7c1b16-428c-4219-af9c-c65b3888471d",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh",
+                ""
+              ]
+            },
+            "description": "Refresh JWT access token using refresh token"
+          },
+          "response": []
+        },
+        {
+          "name": "API Root",
+          "id": "fb166a75-f77f-491e-9556-7b71f5825878",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                ""
+              ]
+            },
+            "description": "Get API root information and available endpoints"
+          },
+          "response": []
+        }
+      ],
+      "id": "ce406dc8-77c4-4460-b751-66fb4ab3565f",
+      "description": "JWT authentication endpoints for login and token refresh"
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "List Students",
+          "id": "56c003f1-8d8d-42c3-b793-b8255d7d5e51",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                ""
+              ]
+            },
+            "description": "List all student profiles (Admin/Officer only). Supports filtering by faculty, department, course, year_of_study, status. Supports search by admission_number, registration_number, username, email."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Student",
+          "id": "8d650066-1a07-4f1f-9663-76e68d58addd",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"student001\",\n        \"email\": \"student001@university.edu\",\n        \"password\": \"securepassword123\",\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\"\n    },\n    \"admission_number\": \"ADM2024001\",\n    \"registration_number\": \"REG2024001\",\n    \"faculty\": \"Engineering\",\n    \"department\": \"Computer Science\",\n    \"course\": \"Software Engineering\",\n    \"year_of_study\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/students/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                ""
+              ]
+            },
+            "description": "Create a new student profile (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Student Details",
+          "id": "05ad49ed-140f-4a62-a8a2-249782fcdcae",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students/{{student_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{student_id}}",
+                ""
+              ]
+            },
+            "description": "Get detailed information for a specific student"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Student",
+          "id": "79070a64-87c4-42d4-995a-0df41f59ea6c",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"faculty\": \"Engineering\",\n    \"department\": \"Computer Science\",\n    \"course\": \"Software Engineering\",\n    \"year_of_study\": 4,\n    \"status\": \"ACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/students/{{student_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{student_id}}",
+                ""
+              ]
+            },
+            "description": "Update student profile (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Student",
+          "id": "7f3ae6d4-cca2-438c-96b9-9d63bcd7b4d5",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students/{{student_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "{{student_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a student profile (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Student Profile",
+          "id": "877fed9d-d45d-4278-86a8-5248ed5cc4fd",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/students/me/profile/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "students",
+                "me",
+                "profile",
+                ""
+              ]
+            },
+            "description": "Get the current authenticated student's profile"
+          },
+          "response": []
+        }
+      ],
+      "id": "6873a58c-aad7-4e58-b94c-3f1fb7d9d087",
+      "description": "Student profile management endpoints"
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "List Departments",
+          "id": "de73ac20-f0fb-4f14-84d7-e27f3e674cad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": "List all departments. Supports filtering by department_type, is_active. Supports search by name, code, description."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Department",
+          "id": "c032ad1d-6be8-46af-be89-78718c0ce174",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Library\",\n    \"code\": \"LIB\",\n    \"description\": \"University Library Department\",\n    \"department_type\": \"ACADEMIC\",\n    \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/departments/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                ""
+              ]
+            },
+            "description": "Create a new department (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department Details",
+          "id": "8044a752-3c58-4c1c-9c7c-b9a7de946933",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "Get detailed information for a specific department"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Department",
+          "id": "87aafde5-d765-407a-87dc-6d62fb9eae66",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Library\",\n    \"code\": \"LIB\",\n    \"description\": \"Updated description\",\n    \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "Update department details (Admin or assigned Officer)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Department",
+          "id": "f308374a-a27d-42b6-a2b9-6874ee0fd3bb",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                ""
+              ]
+            },
+            "description": "Delete a department (Admin only). Cannot delete departments with sub-departments."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department Officers",
+          "id": "8cbebcca-dbee-4c8e-81e2-57131b4eb1aa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/officers/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                "officers",
+                ""
+              ]
+            },
+            "description": "Get list of officers assigned to a department"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Officers to Department",
+          "id": "6b191f4c-d7d3-4ce8-ad2b-f9dd74b56a77",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"officer_ids\": [1, 2, 3]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/officers/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                "officers",
+                ""
+              ]
+            },
+            "description": "Add officers to a department (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Officers from Department",
+          "id": "ce2ee8f5-7bd4-4602-a1d4-8e0830556b09",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"officer_ids\": [1, 2]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/departments/{{department_id}}/officers/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "{{department_id}}",
+                "officers",
+                ""
+              ]
+            },
+            "description": "Remove officers from a department (Admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department Hierarchy",
+          "id": "7fb02aa4-0a88-41aa-b6eb-4aa6e1860e46",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/departments/hierarchy/tree/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "departments",
+                "hierarchy",
+                "tree",
+                ""
+              ]
+            },
+            "description": "Get the complete department hierarchy tree structure"
+          },
+          "response": []
+        }
+      ],
+      "id": "4779bd31-00ad-4bae-9236-d03662693bce",
+      "description": "Department management and hierarchy endpoints"
+    },
+    {
+      "name": "Clearance",
+      "item": [
+        {
+          "name": "Workflows",
+          "item": [
+            {
+              "name": "List Workflows",
+              "id": "f4b9171d-a72d-4925-ae03-a2f3ebfc0b01",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/workflows/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "workflows",
+                    ""
+                  ]
+                },
+                "description": "List all active clearance workflows. Supports search by name and description."
+              },
+              "response": []
+            }
+          ],
+          "id": "e3ee1dc5-edb2-4c7d-8774-30a22eb9853d"
+        },
+        {
+          "name": "Sessions",
+          "item": [
+            {
+              "name": "List Sessions",
+              "id": "bcf9080d-3b61-4ea9-bbfe-691c5a3fa387",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/sessions/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "sessions",
+                    ""
+                  ]
+                },
+                "description": "List clearance sessions filtered by user role. Supports filtering by status and workflow."
+              },
+              "response": []
+            },
+            {
+              "name": "Create Session",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Session created successfully\", function() {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "if (jsonData.id) {",
+                      "    pm.environment.set(\"session_id\", jsonData.id);",
+                      "    console.log(\"✅ Session ID saved: \" + jsonData.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "id": "39a0e5f6-f6b0-4c85-9a2e-f59f8f625cb6",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"workflow\": {{workflow_id}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/sessions/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "sessions",
+                    ""
+                  ]
+                },
+                "description": "Create a new clearance session (Students only). Creates clearance records for all departments in the workflow."
+              },
+              "response": []
+            },
+            {
+              "name": "Get Session Details",
+              "id": "bce80e32-108f-4ee9-a357-b8215204f5e6",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/sessions/{{session_id}}/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "sessions",
+                    "{{session_id}}",
+                    ""
+                  ]
+                },
+                "description": "Get detailed information for a specific clearance session"
+              },
+              "response": []
+            }
+          ],
+          "id": "d59fb70c-79a8-4ce4-a647-229b2c72a9c9"
+        },
+        {
+          "name": "Records",
+          "item": [
+            {
+              "name": "Get Pending Clearances",
+              "id": "70c4fd0c-dada-4c9f-ae64-41dea812849c",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/pending/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "pending",
+                    ""
+                  ]
+                },
+                "description": "Get pending clearances for the current officer's departments (Officers only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Record Details",
+              "id": "01e7546c-5293-4d09-a3cd-f319408546bd",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/records/{{record_id}}/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "records",
+                    "{{record_id}}",
+                    ""
+                  ]
+                },
+                "description": "Get detailed information for a specific clearance record"
+              },
+              "response": []
+            },
+            {
+              "name": "Approve Clearance",
+              "id": "06625213-1b8e-4c7d-bede-3c855fb9aa1c",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"remarks\": \"All requirements met. Approved.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/records/{{record_id}}/approve/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "records",
+                    "{{record_id}}",
+                    "approve",
+                    ""
+                  ]
+                },
+                "description": "Approve a clearance record (Officers only). Sends email notification to student."
+              },
+              "response": []
+            },
+            {
+              "name": "Reject Clearance",
+              "id": "d81fe56c-31ff-4154-b8a2-9b9e9735ebd0",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"remarks\": \"Outstanding library books need to be returned.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/records/{{record_id}}/reject/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "records",
+                    "{{record_id}}",
+                    "reject",
+                    ""
+                  ]
+                },
+                "description": "Reject a clearance record (Officers only). Remarks are required. Sends email notification to student."
+              },
+              "response": []
+            }
+          ],
+          "id": "c52e88b3-6236-4404-a063-17055aa4fd56"
+        },
+        {
+          "name": "Comments",
+          "item": [
+            {
+              "name": "Get Record Comments",
+              "id": "d0c9f8e8-16fb-44b5-9f70-0ce68a21c4f0",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/records/{{record_id}}/comments/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "records",
+                    "{{record_id}}",
+                    "comments",
+                    ""
+                  ]
+                },
+                "description": "Get all comments for a clearance record"
+              },
+              "response": []
+            },
+            {
+              "name": "Add Comment",
+              "id": "f89a0df7-0ced-4fae-868e-818d114dfd80",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"comment\": \"Please provide additional documentation.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/records/{{record_id}}/comments/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "records",
+                    "{{record_id}}",
+                    "comments",
+                    ""
+                  ]
+                },
+                "description": "Add a comment to a clearance record"
+              },
+              "response": []
+            }
+          ],
+          "id": "24b26f47-c034-4b83-99bf-2538c6b78e42"
+        },
+        {
+          "name": "Student Summary",
+          "item": [
+            {
+              "name": "Get Student Clearance Summary",
+              "id": "b3841d79-f7c9-4b9b-a00e-2d06fd460aa5",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/student/summary/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "student",
+                    "summary",
+                    ""
+                  ]
+                },
+                "description": "Get clearance summary for the current student including active session, progress, and pending departments"
+              },
+              "response": []
+            }
+          ],
+          "id": "dca1a612-d36f-4714-81f1-bb38c8678c3d"
+        },
+        {
+          "name": "Notifications",
+          "item": [
+            {
+              "name": "List Notifications",
+              "id": "6c7b042b-b32c-4f1d-a4fc-177647bebf42",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/notifications/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "notifications",
+                    ""
+                  ]
+                },
+                "description": "List email notifications"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Notification Details",
+              "id": "a4e93630-cc48-40fa-862c-afb22195ce74",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/notifications/{{notification_id}}/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "notifications",
+                    "{{notification_id}}",
+                    ""
+                  ]
+                },
+                "description": "Get details of a specific email notification"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Notification Stats",
+              "id": "865dd636-6945-4652-b514-8be42c91a68a",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/clearance/notifications/stats/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "clearance",
+                    "notifications",
+                    "stats",
+                    ""
+                  ]
+                },
+                "description": "Get email notification statistics"
+              },
+              "response": []
+            }
+          ],
+          "id": "44d1fc6d-2001-4943-b9a3-d798b2e9398c"
+        }
+      ],
+      "id": "63d53451-c30e-4f24-9faa-b178587a45d1",
+      "description": "Clearance workflow, sessions, and records management"
+    },
+    {
+      "name": "Certificates",
+      "item": [
+        {
+          "name": "Generate Certificate",
+          "id": "cb2124b0-f38c-4e57-95ed-c673ea4b7f5a",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificates/generate/{{session_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "generate",
+                "{{session_id}}",
+                ""
+              ]
+            },
+            "description": "Generate a certificate for a completed clearance session. Only works for sessions with COMPLETED status."
+          },
+          "response": []
+        },
+        {
+          "name": "Download Certificate",
+          "id": "84511ab7-f1a7-4636-996d-b032b1b786b1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificates/download/{{certificate_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "download",
+                "{{certificate_id}}",
+                ""
+              ]
+            },
+            "description": "Download certificate PDF file"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Certificate Details",
+          "id": "b92821ff-85d8-48a0-b34a-bb7915d9fad5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificates/{{certificate_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "{{certificate_id}}",
+                ""
+              ]
+            },
+            "description": "Get detailed information for a specific certificate"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Certificates",
+          "id": "e02eec64-0e34-4f0f-ab0c-a23a6f3d311b",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificates/my-certificates/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "my-certificates",
+                ""
+              ]
+            },
+            "description": "List all certificates for the current student"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Certificate",
+          "id": "ee59021b-05e6-48b7-a07e-a7970dcf1a4b",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"verification_code\": \"VERIFY-1234-5678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/certificates/verify/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "verify",
+                ""
+              ]
+            },
+            "description": "Public endpoint to verify a certificate using its verification code"
+          },
+          "response": []
+        },
+        {
+          "name": "Preview Certificate Template",
+          "id": "973b214c-c03c-40a4-86e6-9d5eef49ee41",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificates/template/preview/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "certificates",
+                "template",
+                "preview",
+                ""
+              ]
+            },
+            "description": "Preview certificate template (Admin only)"
+          },
+          "response": []
+        }
+      ],
+      "id": "8bc8775e-747d-40b4-b0cc-abbf224ae764",
+      "description": "Certificate generation, download, and verification endpoints"
+    },
+    {
+      "name": "Audit",
+      "item": [
+        {
+          "name": "List Audit Logs",
+          "id": "d07d7b99-0930-4ed0-80bd-301651cc2287",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                ""
+              ]
+            },
+            "description": "List audit logs with filters. Supports filtering by action_type, user_role, status, entity_type. Supports date range filters (start_date, end_date)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Log Details",
+          "id": "270b9563-54fe-42db-8aa3-bad550a2805e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/{{log_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                "{{log_id}}",
+                ""
+              ]
+            },
+            "description": "Get detailed information for a specific audit log entry"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recent Activities",
+          "id": "34399df5-8859-41f9-b020-b24e535650cf",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/recent/?limit=50",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                "recent",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            },
+            "description": "Get recent activities across the system"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Audit Logs",
+          "id": "78b2aa13-2358-48db-bfd1-0d53f54a36ed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/user/{{user_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                "user",
+                "{{user_id}}",
+                ""
+              ]
+            },
+            "description": "Get audit logs for a specific user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Entity Audit Logs",
+          "id": "00cf0347-de5e-4e87-ad62-737092bba5ac",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/entity/{{entity_type}}/{{entity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                "entity",
+                "{{entity_type}}",
+                "{{entity_id}}",
+                ""
+              ]
+            },
+            "description": "Get audit logs for a specific entity (e.g., clearance_session, student)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Log Stats",
+          "id": "38fd4923-7a77-4376-88e6-53273e08e301",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/audit/logs/stats/summary/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "logs",
+                "stats",
+                "summary",
+                ""
+              ]
+            },
+            "description": "Get audit log statistics including counts by action, user, status, and recent errors"
+          },
+          "response": []
+        }
+      ],
+      "id": "1cd206c6-2274-45a8-839e-a6673d12dfd8",
+      "description": "Audit logging and activity tracking endpoints (Admin only)"
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Dashboard Overview",
+          "id": "3a85657f-aa28-4f2f-bad5-2b74669803f5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/dashboard/overview/?period=30d",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "dashboard",
+                "overview",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30d",
+                  "description": "Options: 7d, 30d, 90d, 1y"
+                }
+              ]
+            },
+            "description": "Get overview statistics for the dashboard including session counts, completion rates, and performance metrics"
+          },
+          "response": []
+        },
+        {
+          "name": "Clearance Trends",
+          "id": "048f56ef-c63d-4f08-ba35-68625771309e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/trends/clearance/?group_by=day",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "trends",
+                "clearance",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "group_by",
+                  "value": "day",
+                  "description": "Options: day, month, year"
+                }
+              ]
+            },
+            "description": "Get clearance trends over time grouped by day, month, or year"
+          },
+          "response": []
+        },
+        {
+          "name": "Clearance Heatmap",
+          "id": "1a45a740-1ab4-4a52-b40e-a7102921c677",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/trends/heatmap/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "trends",
+                "heatmap",
+                ""
+              ]
+            },
+            "description": "Get clearance activity heatmap data for the last 365 days"
+          },
+          "response": []
+        },
+        {
+          "name": "Department Performance",
+          "id": "bb77f1b7-f10e-4033-9fcf-682ffe11b81c",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/departments/performance/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "departments",
+                "performance",
+                ""
+              ]
+            },
+            "description": "Get department performance metrics including approval rates, rejection rates, and average response times"
+          },
+          "response": []
+        },
+        {
+          "name": "Student Progress List",
+          "id": "3ddc49d7-3a1e-4bcb-a6bc-4b84ff1374a5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/students/progress/?status=IN_PROGRESS&search=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "students",
+                "progress",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "IN_PROGRESS",
+                  "description": "Filter by status: DRAFT, IN_PROGRESS, COMPLETED, BLOCKED, NO_SESSION"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search by username, email, or admission number"
+                }
+              ]
+            },
+            "description": "Get student progress list with filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Report",
+          "id": "fe7b5a02-cf63-414a-89ab-b93dd0deafed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/export/?type=summary&format=json",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "export",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "summary",
+                  "description": "Options: summary, departments, students"
+                },
+                {
+                  "key": "format",
+                  "value": "json",
+                  "description": "Options: json, csv"
+                }
+              ]
+            },
+            "description": "Export report data in various formats"
+          },
+          "response": []
+        }
+      ],
+      "id": "4118f4f1-c56b-4eee-883f-6cbddeb80284",
+      "description": "Dashboard, analytics, and reporting endpoints (Admin only)"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "id": "7c5784cb-ac28-40c7-a5e4-416b7332a962",
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    }
+  ]
+}
