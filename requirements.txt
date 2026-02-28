@@ -1,4 +1,4 @@
-# Core Django
+# Core Django (compatible versions for Python 3.11)
 Django==4.2.10
 djangorestframework==3.14.0
 django-cors-headers==4.3.1
@@ -20,7 +20,8 @@ django-celery-results==2.5.1
 # Email
 django-anymail==10.2
 
-# PDF Generation
+# PDF Generation (Pillow 10.2.0 works with Python 3.11)
+Pillow==10.2.0
 WeasyPrint==60.2
 django-weasyprint==2.2.0
 
@@ -30,5 +31,5 @@ whitenoise==6.6.0
 
 # Utilities
 python-decouple==3.8
-pillow==10.2.0
-setuptools==69.1.1  # This is critical! It provides pkg_resources
+setuptools==69.1.1
+wheel==0.42.0
