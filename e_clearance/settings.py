@@ -137,11 +137,20 @@ USE_TZ = True
 # ======================================================
 # STATIC & MEDIA
 # ======================================================
-
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Include app-level static folders
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # main project static folder
+    BASE_DIR / 'certificates' / 'static',  # certificates app static files
+]
+
+# Whitenoise for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
