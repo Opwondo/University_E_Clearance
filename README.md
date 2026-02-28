@@ -476,3 +476,4 @@ REDIS_URL=redis://localhost:6379
 | GET | `/api/certificates/my-certificates/` | Student's certificates | Student |
 | POST | `/api/certificates/verify/` | Public verification | Public |
 | GET | `/api/certificates/template/preview/` | Template preview | Admin |
+

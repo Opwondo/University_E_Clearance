@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# Install dependencies
+# Upgrade pip and install setuptools first
+pip install --upgrade pip setuptools wheel
+
+# Install requirements
 pip install -r requirements.txt
 
 # Run migrations
