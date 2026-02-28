@@ -3,7 +3,8 @@ services:
     name: university-clearance-api
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn app:app"
+    startCommand: "gunicorn e_clearance.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    healthCheckPath: /
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -12,20 +13,10 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
-        value: False
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: university-clearance-redis
-          property: connectionString
-
-  - type: redis
-    name: university-clearance-redis
-    ipAllowList: []
-    plan: free
-
-databases:
-  - name: university-clearance-db
-    databaseName: clearance
-    user: clearance_user
-    plan: free
+        value: false
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1,university-e-clearance.onrender.com"
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION
+        value: 3.12.0

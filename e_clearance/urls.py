@@ -3,8 +3,13 @@ from django.urls import path, include
 from e_clearance import views as project_views  
 from reports import views as reports_views      
 from reports import views_dashboard
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse("OK", status=200)
 
 urlpatterns = [
+     path('health/', health_check, name='health-check'),
     # Root endpoint - using the alias
     path('', project_views.api_root, name='api-root'),
     
