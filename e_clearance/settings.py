@@ -146,22 +146,21 @@ USE_TZ = True
 
 
 # ======================================================
-# STATIC & MEDIA FILES
+# STATIC & MEDIA
 # ======================================================
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Only include certificates static (remove project static warning)
+# Only include project-level static folder if it exists
 STATICFILES_DIRS = [
-    BASE_DIR / 'certificates' / 'static',
+    BASE_DIR / 'static',
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
 
 # ======================================================
 # CUSTOM USER MODEL
