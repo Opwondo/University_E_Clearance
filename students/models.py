@@ -69,18 +69,24 @@ class StudentProfile(models.Model):
     def __str__(self):
         return f"{self.admission_number} - {self.user.get_full_name() or self.user.username}"
     
+    # ⬇️ THIS METHOD MUST BE INDENTED INSIDE THE CLASS ⬇️
     def get_clearance_status(self):
         """
         Get overall clearance status for this student
         """
-        from clearance.models import ClearanceRecord
-        records = ClearanceRecord.objects.filter(student=self)
-        if not records.exists():
-            return 'NOT_STARTED'
-        if records.filter(status='REJECTED').exists():
-            return 'REJECTED'
-        if records.filter(status='PENDING').exists():
+        try:
+            from clearance.models import ClearanceRecord
+            # Fix: Use session__student instead of student
+            records = ClearanceRecord.objects.filter(session__student=self)
+            if not records.exists():
+                return 'NOT_STARTED'
+            if records.filter(status='REJECTED').exists():
+                return 'REJECTED'
+            if records.filter(status='PENDING').exists():
+                return 'IN_PROGRESS'
+            if records.filter(status='APPROVED').count() == records.count():
+                return 'CLEARED'
             return 'IN_PROGRESS'
-        if records.filter(status='APPROVED').count() == records.count():
-            return 'CLEARED'
-        return 'IN_PROGRESS'
+        except Exception as e:
+            print(f"Error in get_clearance_status: {e}")
+            return 'NOT_STARTED'

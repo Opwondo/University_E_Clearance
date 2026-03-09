@@ -72,7 +72,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"username\": \"Admin\",\n    \"password\": \"xv6m222vejtbx\"\n}",
+              "raw": "{\"username\":\"Admin\",\"password\":\"xv6m222vejtbx\"}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -176,6 +176,36 @@
             "description": "Get API root information and available endpoints"
           },
           "response": []
+        },
+        {
+          "name": "{{base_url}}/api/auth/login/",
+          "id": "cb915ed2-dc4b-44ab-98ea-0c06eef5dfa7",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"Admin\",\n    \"password\": \"xv6m222vejtbx\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login",
+                ""
+              ]
+            }
+          },
+          "response": []
         }
       ],
       "id": "ce406dc8-77c4-4460-b751-66fb4ab3565f",
@@ -186,10 +216,70 @@
       "item": [
         {
           "name": "List Students",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const token = pm.environment.get('token');",
+                  "pm.test('JWT token variable is set', function () {",
+                  "  pm.expect(token, 'Set {{token}} by running the Login request first').to.be.a('string').and.not.be.empty;",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is JSON (not HTML error page)', function () {",
+                  "  const ct = pm.response.headers.get('Content-Type') || '';",
+                  "  pm.expect(ct.toLowerCase()).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response body is an array or paginated object', function () {",
+                  "  const json = pm.response.json();",
+                  "  const isArray = Array.isArray(json);",
+                  "  const isPaginated = json && typeof json === 'object' && (Array.isArray(json.results) || Array.isArray(json.data));",
+                  "  pm.expect(isArray || isPaginated).to.equal(true);",
+                  "});",
+                  "",
+                  "pm.test('If unauthorized, show helpful message', function () {",
+                  "  if (pm.response.code === 401 || pm.response.code === 403) {",
+                  "    pm.expect.fail('Unauthorized/Forbidden. Ensure Authorization: Bearer {{token}} and account has Admin/Officer role.');",
+                  "  }",
+                  "});",
+                  "",
+                  "pm.test('If server error, likely filter/search field mismatch', function () {",
+                  "  if (pm.response.code >= 500) {",
+                  "    pm.expect.fail('Server error. If you are passing filters/search params, verify backend supports them (FieldError). Try without params and check Django filterset/search_fields.');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ],
           "id": "56c003f1-8d8d-42c3-b793-b8255d7d5e51",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "url": {
               "raw": "{{base_url}}/api/students/",
               "host": [
@@ -356,8 +446,17 @@
           "request": {
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{base_url}}/api/departments/",
+              "raw": "{{base_url}}/api/departments/?DITI=1&ICT001=3",
               "host": [
                 "{{base_url}}"
               ],
@@ -365,6 +464,18 @@
                 "api",
                 "departments",
                 ""
+              ],
+              "query": [
+                {
+                  "key": "DITI",
+                  "value": "1",
+                  "uuid": "b4641932-5cd6-4157-8fa4-08dd458a65ea"
+                },
+                {
+                  "key": "ICT001",
+                  "value": "3",
+                  "uuid": "c27e82ba-7570-4cb1-9543-94f0bd6dfa07"
+                }
               ]
             },
             "description": "List all departments. Supports filtering by department_type, is_active. Supports search by name, code, description."
@@ -412,6 +523,15 @@
           "request": {
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n   \n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/api/departments/{{department_id}}/",
               "host": [
@@ -441,7 +561,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Library\",\n    \"code\": \"LIB\",\n    \"description\": \"Updated description\",\n    \"is_active\": true\n}",
+              "raw": "{\n    \"name\": \"Clinic\",\n    \"code\": \"PHAR\",\n    \"description\": \"University Clinic Department\",\n    \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -449,14 +569,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/departments/{{department_id}}/",
+              "raw": "{{base_url}}/api/departments/",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "api",
                 "departments",
-                "{{department_id}}",
                 ""
               ]
             },
@@ -673,15 +792,29 @@
                   "listen": "test",
                   "script": {
                     "exec": [
-                      "var jsonData = pm.response.json();",
+                      "// Helpful diagnostics on failures",
+                      "let jsonData = {};",
+                      "try {",
+                      "  jsonData = pm.response.json();",
+                      "} catch (e) {",
+                      "  // Non-JSON responses (e.g., HTML error pages)",
+                      "}",
                       "",
-                      "pm.test(\"Session created successfully\", function() {",
-                      "    pm.response.to.have.status(201);",
+                      "pm.test(\"Create Session: status is 201 Created\", function() {",
+                      "  pm.expect(pm.response.code, pm.response.text()).to.eql(201);",
                       "});",
                       "",
-                      "if (jsonData.id) {",
-                      "    pm.environment.set(\"session_id\", jsonData.id);",
-                      "    console.log(\"✅ Session ID saved: \" + jsonData.id);",
+                      "// If we didn't get 201, surface server error detail (common in DRF)",
+                      "if (pm.response.code !== 201) {",
+                      "  const detail = (jsonData && (jsonData.detail || jsonData.message)) ? (jsonData.detail || jsonData.message) : pm.response.text();",
+                      "  console.log('Create Session failed. Status:', pm.response.code);",
+                      "  console.log('Response detail:', detail);",
+                      "  console.log('Request body sent:', pm.request.body && pm.request.body.raw);",
+                      "}",
+                      "",
+                      "if (jsonData && jsonData.id) {",
+                      "  pm.environment.set(\"session_id\", jsonData.id);",
+                      "  console.log(\"Session ID saved: \" + jsonData.id);",
                       "}"
                     ],
                     "type": "text/javascript"
@@ -699,7 +832,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"workflow\": {{workflow_id}}\n}",
+                  "raw": "{\n    \"workflow\": \"{{workflow_id}}\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
